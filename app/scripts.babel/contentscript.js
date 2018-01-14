@@ -66,7 +66,7 @@ setInterval(() => {
 
                 badgeElement.addEventListener('click', function(e){
                     titleTextArea.focus()
-                    titleTextArea.value = titleTextArea.value.replace(/^\(.+\) /, '')
+                    titleTextArea.value = titleTextArea.value.replace(/^\(.+\) /, '').replace(/ \[.+\]/, '')
                     var evt = document.createEvent('KeyboardEvent');
                     evt.initEvent('input', true, false);
                     // adding this created a magic and passes it as if keypressed
@@ -88,20 +88,37 @@ setInterval(() => {
                 badgeElement.addEventListener('click', function(e){
                     // サブタスクのSPを集計
                     const subtasks = document.getElementsByClassName('SubtaskTaskRow')
-                    const subtasksSP = Array.prototype.reduce.call(subtasks, (acc, e) => {
+                    let subtasksNotCompletedStoryPoint = 0, subtasksCompletedStoryPoint = 0;
+                    Array.prototype.forEach.call(subtasks, e => {
+                        const isCompleted = !!e.querySelector('.TaskRowCompletionStatus-checkbox--complete')
                         const subtaskTitleElement = e.querySelector('.autogrowTextarea-shadow')
                         if(subtaskTitleElement){
                             const sp_matched = subtaskTitleElement.textContent.match(/^\((\d+(?:\.\d+)?)\)/)
                             if(sp_matched){
-                                acc += Number(sp_matched[1])
+                                if(isCompleted) {
+                                    subtasksCompletedStoryPoint += Number(sp_matched[1])
+                                }
+                                subtasksNotCompletedStoryPoint += Number(sp_matched[1])
                             }
                         }
-                        return acc
-                    }, 0)
+                    })
+                    const titlePrefix = (() => {
+                        if(subtasksNotCompletedStoryPoint){
+                            return '(' + subtasksNotCompletedStoryPoint + ') '
+                        }
+                        return ''
+                    })()
+                    const titlePostfix = (() => {
+                        if(subtasksCompletedStoryPoint){
+                            return ' [' + subtasksCompletedStoryPoint + ']'
+                        }
+                        return ''
+                    })()
+
 
                     // 編集
                     titleTextArea.focus()
-                    titleTextArea.value = '(' + subtasksSP + ') ' + titleTextArea.value.replace(/^\(.+\) /, '')
+                    titleTextArea.value = titlePrefix + titleTextArea.value.replace(/^\(.+\) /, '').replace(/ \[.+\]/, '') + titlePostfix
                     var evt = document.createEvent('KeyboardEvent');
                     evt.initEvent('input', true, false);
                     // adding this created a magic and passes it as if keypressed
@@ -145,12 +162,19 @@ setInterval(() => {
                 let totalNotCompletedStoryPoint = 0, totalCompletedStoryPoint = 0;
                 Array.prototype.forEach.call(boardCardNames, (e) => {
                     const isCompleted = e.getElementsByTagName('svg').length !== 0;
-                    const sp_matched = e.textContent.match(/^\((\d+(?:\.\d+)?)\)/)
+                    const sp_matched = e.textContent.match(/^\((\d+(?:\.\d+)?)\)/) // SP   例: (10) タスク => 10
+                    const sp_subtask_completed_matched = e.textContent.match(/\[(\d+(?:\.\d+)?)\]$/) // 部分完了タスクSP   例: (10) タスク [5]  => 5/5
                     if(sp_matched){
                         if(isCompleted) {
                             totalCompletedStoryPoint += Number(sp_matched[1])
                         } else {
-                            totalNotCompletedStoryPoint += Number(sp_matched[1])
+                            if(sp_subtask_completed_matched) {
+                                // サブタスクの完了SPがある
+                                totalNotCompletedStoryPoint += Number(sp_matched[1]) - Number(sp_subtask_completed_matched[1])
+                                totalCompletedStoryPoint += Number(sp_subtask_completed_matched[1])
+                            } else {
+                                totalNotCompletedStoryPoint += Number(sp_matched[1])
+                            }
                         }
                     }
                 })

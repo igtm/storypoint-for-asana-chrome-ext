@@ -16,6 +16,7 @@ const badgeStyle = {
 }
 
 const clearBadgeColor = '#95a5a6';
+const syncSubtaskBadgeColor = '#1abc9c';
 const completedBadgeColor = '#f39c12';
 
 
@@ -75,7 +76,41 @@ setInterval(() => {
                 return badgeElement
             })()
             badgeElements.unshift(clearBadge);
-            
+            // サブタスク更新バッジの生成 (ボタンを押すとサブタスクにセットしたSPを計算しこのタスクのSPにセットする)
+            const syncSubtaskBadge = (()=>{
+                const badgeElement = document.createElement('span')
+                badgeElement.textContent = 'sync subtasks'
+                Object.keys(badgeStyle).forEach(key => {
+                    badgeElement.style[key] = badgeStyle[key]
+                })
+                badgeElement.style.background = syncSubtaskBadgeColor
+
+                badgeElement.addEventListener('click', function(e){
+                    // サブタスクのSPを集計
+                    const subtasks = document.getElementsByClassName('SubtaskTaskRow')
+                    const subtasksSP = Array.prototype.reduce.call(subtasks, (acc, e) => {
+                        const subtaskTitleElement = e.querySelector('.autogrowTextarea-shadow')
+                        if(subtaskTitleElement){
+                            const sp_matched = subtaskTitleElement.textContent.match(/^\((\d+(?:\.\d+)?)\)/)
+                            if(sp_matched){
+                                acc += Number(sp_matched[1])
+                            }
+                        }
+                        return acc
+                    }, 0)
+
+                    // 編集
+                    titleTextArea.focus()
+                    titleTextArea.value = '(' + subtasksSP + ') ' + titleTextArea.value.replace(/^\(.+\) /, '')
+                    var evt = document.createEvent('KeyboardEvent');
+                    evt.initEvent('input', true, false);
+                    // adding this created a magic and passes it as if keypressed
+                    titleTextArea.dispatchEvent(evt);
+                    titleTextArea.blur()
+                }, false)
+                return badgeElement
+            })()
+            badgeElements.push(syncSubtaskBadge);         
     
             // バッジコンテナの生成
             let badgeContainer = document.createElement('div')

@@ -286,14 +286,14 @@ setInterval(() => {
 }, 1000)
 
 /**
- * 要素が取得できるまでループする関数 (max5秒)
+ * 要素が取得できるまでループする関数 (max500ms)
  * @param {*} query 
  * @param {*} wait ms
  */
 function getElementUntilRendered(parent, query, wait) {
     return new Promise ((resolve, reject) => {
         function iter(counter) {
-            if(counter*wait >= 5000) {
+            if(counter*wait >= 500) {
                 return ;
             }
             const e = parent.querySelector(query)
@@ -308,14 +308,14 @@ function getElementUntilRendered(parent, query, wait) {
 }
 
 /**
- * 要素が取得できるまでループする関数 (max5秒)
+ * 要素が取得できるまでループする関数 (max500ms)
  * @param {*} query 
  * @param {*} wait ms
  */
 function getElementsUntilRendered(parent, query, wait) {
     return new Promise ((resolve, reject) => {
         function iter(counter) {
-            if(counter*wait >= 5000) {
+            if(counter*wait >= 500) {
                 return ;
             }
             const e = parent.querySelectorAll(query)

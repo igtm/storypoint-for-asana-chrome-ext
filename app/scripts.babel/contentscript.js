@@ -152,6 +152,9 @@ setInterval(() => {
     // 操作するエレメントがすべて取得できたら (カード表示時)
     boardColumnsPromise
         .then(boardColumns => {
+            let totalNotCompletedStoryPoint = 0, totalCompletedStoryPoint = 0;
+
+            // 各カラム別集計
             boardColumns.forEach(boardColumn => {
 
                 // 操作するエレメント
@@ -159,36 +162,38 @@ setInterval(() => {
                 const boardCardNames = boardColumn.querySelectorAll('.BoardCard-name')
 
                 // SPの計算
-                let totalNotCompletedStoryPoint = 0, totalCompletedStoryPoint = 0;
+                let columnTotalNotCompletedStoryPoint = 0, columnTotalCompletedStoryPoint = 0;
                 Array.prototype.forEach.call(boardCardNames, (e) => {
                     const isCompleted = e.getElementsByTagName('svg').length !== 0;
                     const sp_matched = e.textContent.match(/^\((\d+(?:\.\d+)?)\)/) // SP   例: (10) タスク => 10
                     const sp_subtask_completed_matched = e.textContent.match(/\[(\d+(?:\.\d+)?)\]$/) // 部分完了タスクSP   例: (10) タスク [5]  => 5/5
                     if(sp_matched){
                         if(isCompleted) {
-                            totalCompletedStoryPoint += Number(sp_matched[1])
+                            columnTotalCompletedStoryPoint += Number(sp_matched[1])
                         } else {
                             if(sp_subtask_completed_matched) {
                                 // サブタスクの完了SPがある
-                                totalNotCompletedStoryPoint += Number(sp_matched[1]) - Number(sp_subtask_completed_matched[1])
-                                totalCompletedStoryPoint += Number(sp_subtask_completed_matched[1])
+                                columnTotalNotCompletedStoryPoint += Number(sp_matched[1]) - Number(sp_subtask_completed_matched[1])
+                                columnTotalCompletedStoryPoint += Number(sp_subtask_completed_matched[1])
                             } else {
-                                totalNotCompletedStoryPoint += Number(sp_matched[1])
+                                columnTotalNotCompletedStoryPoint += Number(sp_matched[1])
                             }
                         }
                     }
                 })
+                totalNotCompletedStoryPoint += columnTotalNotCompletedStoryPoint
+                totalCompletedStoryPoint += columnTotalCompletedStoryPoint
 
                 // 未終了StoryPoint
                 {
                     const hasTotalStoryPointElement = boardColumn.querySelector('.columntop-notcompleted-story-point')
                     if(hasTotalStoryPointElement){
-                        hasTotalStoryPointElement.textContent = totalNotCompletedStoryPoint
+                        hasTotalStoryPointElement.textContent = columnTotalNotCompletedStoryPoint
                     } else {
                         // 上部に表示する合計バッジを生成
                         let totalStoryPointElement = document.createElement('span')
                         totalStoryPointElement.className = 'columntop-notcompleted-story-point'
-                        totalStoryPointElement.textContent = totalNotCompletedStoryPoint
+                        totalStoryPointElement.textContent = columnTotalNotCompletedStoryPoint
                         Object.keys(badgeStyle).forEach(key => {
                             totalStoryPointElement.style[key] = badgeStyle[key]
                         })
@@ -201,22 +206,22 @@ setInterval(() => {
                     const hasTotalStoryPointElement = boardColumn.querySelector('.columntop-completed-story-point')
                     if(hasTotalStoryPointElement){
                         // 0件なら表示しない
-                        if(totalCompletedStoryPoint === 0){
+                        if(columnTotalCompletedStoryPoint === 0){
                             hasTotalStoryPointElement.parentNode.removeChild(hasTotalStoryPointElement)
                             return 
                         }
 
-                        hasTotalStoryPointElement.textContent = totalCompletedStoryPoint
+                        hasTotalStoryPointElement.textContent = columnTotalCompletedStoryPoint
                     } else {
                         // 0件なら表示しない
-                        if(totalCompletedStoryPoint === 0){
+                        if(columnTotalCompletedStoryPoint === 0){
                             return 
                         }
 
                         // 上部に表示する合計バッジを生成
                         let totalStoryPointElement = document.createElement('span')
                         totalStoryPointElement.className = 'columntop-completed-story-point'
-                        totalStoryPointElement.textContent = totalCompletedStoryPoint
+                        totalStoryPointElement.textContent = columnTotalCompletedStoryPoint
                         Object.keys(badgeStyle).forEach(key => {
                             totalStoryPointElement.style[key] = badgeStyle[key]
                         })
@@ -226,6 +231,56 @@ setInterval(() => {
                     }
                 }
             })
+
+            // ボード内合計 (ボード上部のプロジェクト名 右横に表示)
+            const boardTitleContainer = document.querySelector('.PageHeaderStructure-titleRow')
+            if(!boardTitleContainer) return ;
+            {
+                const hasTotalStoryPointElement = document.querySelector('.boardtop-notcompleted-story-point')
+                if(hasTotalStoryPointElement) {
+                    hasTotalStoryPointElement.textContent = totalNotCompletedStoryPoint
+                } else {
+                    // 0件なら表示しない
+                    if(totalNotCompletedStoryPoint === 0) {
+                        return 
+                    }
+                    // 合計未完了SPバッジを表示
+                    let totalStoryPointElement = document.createElement('span')
+                    totalStoryPointElement.className = 'boardtop-notcompleted-story-point'
+                    totalStoryPointElement.textContent = totalNotCompletedStoryPoint
+                    Object.keys(badgeStyle).forEach(key => {
+                        totalStoryPointElement.style[key] = badgeStyle[key]
+                    })
+                    boardTitleContainer.appendChild(totalStoryPointElement)
+                }
+            }
+            // 合計完了SPバッジを表示
+            {
+                const hasTotalStoryPointElement = document.querySelector('.boardtop-completed-story-point')
+                if(hasTotalStoryPointElement) {
+                    // 0件なら表示しない
+                    if(totalCompletedStoryPoint === 0){
+                        hasTotalStoryPointElement.parentNode.removeChild(hasTotalStoryPointElement)
+                        return 
+                    }
+
+                    hasTotalStoryPointElement.textContent = totalCompletedStoryPoint
+                } else {
+                    // 0件なら表示しない
+                    if(totalCompletedStoryPoint === 0) {
+                        return 
+                    }
+                    let totalStoryPointElement = document.createElement('span')
+                    totalStoryPointElement.className = 'boardtop-completed-story-point'
+                    totalStoryPointElement.textContent = totalCompletedStoryPoint
+                    Object.keys(badgeStyle).forEach(key => {
+                        totalStoryPointElement.style[key] = badgeStyle[key]
+                    })
+                    totalStoryPointElement.style.background = completedBadgeColor
+                    boardTitleContainer.appendChild(totalStoryPointElement)        
+                }
+            }
+            
         })
 
 }, 1000)

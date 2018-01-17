@@ -159,7 +159,7 @@ setInterval(() => {
 
                 // 操作するエレメント
                 const boardColumnHeader = boardColumn.querySelector('.BoardColumnHeader')
-                const boardCardNames = boardColumn.querySelectorAll('.BoardCard-name')
+                const boardCardNames = boardColumn.querySelectorAll('.BoardCardWithCustomProperties-name')
 
                 // SPの計算
                 let columnTotalNotCompletedStoryPoint = 0, columnTotalCompletedStoryPoint = 0;

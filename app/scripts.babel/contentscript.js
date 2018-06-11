@@ -14,6 +14,15 @@ const badgeStyle = {
     marginLeft: '4px',
     cursor: 'pointer'
 }
+const countStyle = {
+  'padding': '0 5px',
+  'color': '#000',
+  'opacity': '0.7',
+  'text-align': 'center',
+  'font-weight': 'bold',
+  'margin-left': '4px',
+  'font-size': '18px'
+}
 
 const clearBadgeColor = '#95a5a6';
 const syncSubtaskBadgeColor = '#1abc9c';
@@ -184,6 +193,23 @@ setInterval(() => {
                 totalNotCompletedStoryPoint += columnTotalNotCompletedStoryPoint
                 totalCompletedStoryPoint += columnTotalCompletedStoryPoint
 
+                // 件数
+                {
+                    const hasTotalCountElement = boardColumn.querySelector('.columntop-count-story-point')
+                    if(hasTotalCountElement){
+                        hasTotalCountElement.textContent = boardCardNames.length
+                    } else {
+                        // 上部に表示する合計バッジを生成
+                        let totalStoryPointElement = document.createElement('span')
+                        totalStoryPointElement.className = 'columntop-count-story-point'
+                        totalStoryPointElement.textContent = boardCardNames.length
+                        Object.keys(countStyle).forEach(key => {
+                            totalStoryPointElement.style[key] = countStyle[key]
+                        })
+
+                        boardColumnHeader.appendChild(totalStoryPointElement)
+                    }
+                }
                 // 未終了StoryPoint
                 {
                     const hasTotalStoryPointElement = boardColumn.querySelector('.columntop-notcompleted-story-point')

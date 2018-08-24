@@ -259,7 +259,7 @@ setInterval(() => {
             })
 
             // ボード内合計 (ボード上部のプロジェクト名 右横に表示)
-            const boardTitleContainer = document.querySelector('.PageHeaderStructure-titleRow')
+            const boardTitleContainer = document.querySelector('.TopbarPageHeaderStructure-titleRow')
             if(!boardTitleContainer) return ;
             {
                 const hasTotalStoryPointElement = document.querySelector('.boardtop-notcompleted-story-point')

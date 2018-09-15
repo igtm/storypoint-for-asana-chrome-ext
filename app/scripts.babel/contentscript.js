@@ -337,7 +337,7 @@ setInterval(() => {
                 let nextRow = listSectionDropTargetRow.nextElementSibling
                 while( cnt < 1000 && nextRow && nextRow.querySelector('.ItemRow.ItemRow--enabled.DraggableItemRow-item.TaskRow') ) {
                     
-                    const titleElement = nextRow.querySelector('.TaskName-shadow')
+                    const titleElement = nextRow.querySelector('.TaskName-input.override-focus-border')
                     const title = titleElement.textContent
                     const isCompleted = !!nextRow.querySelector('.TaskRow--completed');
                     const sp_matched = title.match(/^\((\d+(?:\.\d+)?)\)/) // SP   例: (10) タスク => 10
@@ -474,7 +474,6 @@ setInterval(() => {
 function getElementUntilRendered(parent, query, wait) {
     return new Promise ((resolve, reject) => {
         function iter(counter) {
-            console.log(counter)
             if(counter*wait >= 500) {
                 return reject()
             }

@@ -326,7 +326,7 @@ setInterval(() => {
             listSections.forEach(listSection => {
 
                 // 操作するエレメント
-                const listSectionHeader = listSection.querySelector('.ItemRow-left')
+                const listSectionHeader = listSection
                 const listSectionDropTargetRow = listSection.parentElement
 
                 // SPの計算

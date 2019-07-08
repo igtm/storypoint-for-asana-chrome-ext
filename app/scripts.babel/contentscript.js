@@ -512,6 +512,6 @@ function getElementsUntilRendered(parent, query, wait) {
   })
 }
 
-function displayNumber(num) {
-  return num.toFixed(2);
+function displayNumber(number) {
+  return parseFloat(number.toFixed(2));
 }

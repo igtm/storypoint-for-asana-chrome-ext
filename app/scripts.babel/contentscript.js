@@ -5,23 +5,25 @@ const SP_BADGES = ['?','0','0.5','1','2','3','5','8','13','21']
 const badgeStyle = {
     background: '#3498db',
     borderRadius: '12px',
-    minWidth: '14px',
-    height: '16px',
+    minWidth: '12px',
+    height: '12px',
     padding: '5px',
     color: '#fff',
     textAlign: 'center',
-    fontWeight: 'bold',
+    fontWeight: '600',
     marginLeft: '4px',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    fontSize: '11px',
+    lineHeight: '11px'
 }
 const countStyle = {
-  'padding': '0 5px',
-  'color': '#000',
-  'opacity': '0.7',
-  'text-align': 'center',
-  'font-weight': 'bold',
-  'margin-left': '4px',
-  'font-size': '18px'
+    'padding': '0 5px',
+    'color': '#000',
+    'opacity': '0.7',
+    'text-align': 'center',
+    'font-weight': '600',
+    'margin-left': '4px',
+    'font-size': '18px'
 }
 
 const clearBadgeColor = '#95a5a6';
@@ -36,7 +38,7 @@ setInterval(() => {
     const bodyContainerPromise = getElementUntilRendered(document,'.SingleTaskPane-body', 100)
     const descriptionContainerPromise = getElementUntilRendered(document,'.SingleTaskPane-descriptionRow', 100)
     const titleTextAreaPromise = getElementUntilRendered(document,'.simpleTextarea--dynamic', 100)
-    
+
     // 操作するエレメントがすべて取得できたら (カード表示時)
     Promise.all([bodyContainerPromise, descriptionContainerPromise, titleTextAreaPromise])
         .then(([bodyContainer, descriptionContainer, titleTextArea]) => {
@@ -136,18 +138,18 @@ setInterval(() => {
                 }, false)
                 return badgeElement
             })()
-            badgeElements.push(syncSubtaskBadge);         
-    
+            badgeElements.push(syncSubtaskBadge);
+
             // バッジコンテナの生成
             let badgeContainer = document.createElement('div')
             badgeContainer.style.display = 'flex'
             badgeContainer.className = 'badge-container'
-    
+
             // バッジコンテナにバッジの挿入
             badgeElements.forEach(e => {
                 badgeContainer.appendChild(e)
             })
-    
+
             // バッジコンテナをDOMに設置
             bodyContainer.insertBefore(badgeContainer, descriptionContainer)
         })
@@ -157,7 +159,7 @@ setInterval(() => {
 setInterval(() => {
     // 操作するエレメント
     const boardColumnsPromise = getElementsUntilRendered(document, '.BoardColumn', 100)
-    
+
     // 操作するエレメントがすべて取得できたら (カード表示時)
     boardColumnsPromise
         .then(boardColumns => {
@@ -197,12 +199,12 @@ setInterval(() => {
                 {
                     const hasTotalCountElement = boardColumn.querySelector('.columntop-count-story-point')
                     if(hasTotalCountElement){
-                        hasTotalCountElement.textContent = boardCardNames.length
+                        hasTotalCountElement.textContent = displayNumber(boardCardNames.length)
                     } else {
                         // 上部に表示する合計バッジを生成
                         let totalStoryPointElement = document.createElement('span')
                         totalStoryPointElement.className = 'columntop-count-story-point'
-                        totalStoryPointElement.textContent = boardCardNames.length
+                        totalStoryPointElement.textContent = displayNumber(boardCardNames.length)
                         Object.keys(countStyle).forEach(key => {
                             totalStoryPointElement.style[key] = countStyle[key]
                         })
@@ -214,12 +216,12 @@ setInterval(() => {
                 {
                     const hasTotalStoryPointElement = boardColumn.querySelector('.columntop-notcompleted-story-point')
                     if(hasTotalStoryPointElement){
-                        hasTotalStoryPointElement.textContent = columnTotalNotCompletedStoryPoint
+                        hasTotalStoryPointElement.textContent = displayNumber(columnTotalNotCompletedStoryPoint)
                     } else {
                         // 上部に表示する合計バッジを生成
                         let totalStoryPointElement = document.createElement('span')
                         totalStoryPointElement.className = 'columntop-notcompleted-story-point'
-                        totalStoryPointElement.textContent = columnTotalNotCompletedStoryPoint
+                        totalStoryPointElement.textContent = displayNumber(columnTotalNotCompletedStoryPoint)
                         Object.keys(badgeStyle).forEach(key => {
                             totalStoryPointElement.style[key] = badgeStyle[key]
                         })
@@ -234,20 +236,20 @@ setInterval(() => {
                         // 0件なら表示しない
                         if(columnTotalCompletedStoryPoint === 0){
                             hasTotalStoryPointElement.parentNode.removeChild(hasTotalStoryPointElement)
-                            return 
+                            return
                         }
 
-                        hasTotalStoryPointElement.textContent = columnTotalCompletedStoryPoint
+                        hasTotalStoryPointElement.textContent = displayNumber(columnTotalCompletedStoryPoint)
                     } else {
                         // 0件なら表示しない
                         if(columnTotalCompletedStoryPoint === 0){
-                            return 
+                            return
                         }
 
                         // 上部に表示する合計バッジを生成
                         let totalStoryPointElement = document.createElement('span')
                         totalStoryPointElement.className = 'columntop-completed-story-point'
-                        totalStoryPointElement.textContent = columnTotalCompletedStoryPoint
+                        totalStoryPointElement.textContent = displayNumber(columnTotalCompletedStoryPoint)
                         Object.keys(badgeStyle).forEach(key => {
                             totalStoryPointElement.style[key] = badgeStyle[key]
                         })
@@ -264,16 +266,16 @@ setInterval(() => {
             {
                 const hasTotalStoryPointElement = document.querySelector('.boardtop-notcompleted-story-point')
                 if(hasTotalStoryPointElement) {
-                    hasTotalStoryPointElement.textContent = totalNotCompletedStoryPoint
+                    hasTotalStoryPointElement.textContent = displayNumber(totalNotCompletedStoryPoint)
                 } else {
                     // 0件なら表示しない
                     if(totalNotCompletedStoryPoint === 0) {
-                        return 
+                        return
                     }
                     // 合計未完了SPバッジを表示
                     let totalStoryPointElement = document.createElement('span')
                     totalStoryPointElement.className = 'boardtop-notcompleted-story-point'
-                    totalStoryPointElement.textContent = totalNotCompletedStoryPoint
+                    totalStoryPointElement.textContent = displayNumber(totalNotCompletedStoryPoint)
                     Object.keys(badgeStyle).forEach(key => {
                         totalStoryPointElement.style[key] = badgeStyle[key]
                     })
@@ -287,26 +289,26 @@ setInterval(() => {
                     // 0件なら表示しない
                     if(totalCompletedStoryPoint === 0){
                         hasTotalStoryPointElement.parentNode.removeChild(hasTotalStoryPointElement)
-                        return 
+                        return
                     }
 
-                    hasTotalStoryPointElement.textContent = totalCompletedStoryPoint
+                    hasTotalStoryPointElement.textContent = displayNumber(totalCompletedStoryPoint)
                 } else {
                     // 0件なら表示しない
                     if(totalCompletedStoryPoint === 0) {
-                        return 
+                        return
                     }
                     let totalStoryPointElement = document.createElement('span')
                     totalStoryPointElement.className = 'boardtop-completed-story-point'
-                    totalStoryPointElement.textContent = totalCompletedStoryPoint
+                    totalStoryPointElement.textContent = displayNumber(totalCompletedStoryPoint)
                     Object.keys(badgeStyle).forEach(key => {
                         totalStoryPointElement.style[key] = badgeStyle[key]
                     })
                     totalStoryPointElement.style.background = completedBadgeColor
-                    boardTitleContainer.appendChild(totalStoryPointElement)        
+                    boardTitleContainer.appendChild(totalStoryPointElement)
                 }
             }
-            
+
         })
 
 }, 1000)
@@ -316,7 +318,7 @@ setInterval(() => {
 setInterval(() => {
     // 操作するエレメント
     const listSectionsPromise = getElementsUntilRendered(document, '.ItemRow.ItemRow--enabled.DraggableItemRow-item.SectionRow', 100)
-    
+
     // 操作するエレメントがすべて取得できたら (カード表示時)
     listSectionsPromise
         .then(listSections => {
@@ -336,7 +338,7 @@ setInterval(() => {
                 let cnt = 0
                 let nextRow = listSectionDropTargetRow.nextElementSibling
                 while( cnt < 1000 && nextRow && nextRow.querySelector('.ItemRow.ItemRow--enabled.DraggableItemRow-item.TaskRow') ) {
-                    
+
                     const titleElement = nextRow.querySelector('.TaskName-input.override-focus-border')
                     const title = titleElement.textContent
                     const isCompleted = !!nextRow.querySelector('.TaskRow--completed');
@@ -365,12 +367,12 @@ setInterval(() => {
                 {
                     const hasTotalStoryPointElement = listSection.querySelector('.columntop-notcompleted-story-point')
                     if(hasTotalStoryPointElement){
-                        hasTotalStoryPointElement.textContent = columnTotalNotCompletedStoryPoint
+                        hasTotalStoryPointElement.textContent = displayNumber(columnTotalNotCompletedStoryPoint)
                     } else {
                         // 上部に表示する合計バッジを生成
                         let totalStoryPointElement = document.createElement('span')
                         totalStoryPointElement.className = 'columntop-notcompleted-story-point'
-                        totalStoryPointElement.textContent = columnTotalNotCompletedStoryPoint
+                        totalStoryPointElement.textContent = displayNumber(columnTotalNotCompletedStoryPoint)
                         Object.keys(badgeStyle).forEach(key => {
                             totalStoryPointElement.style[key] = badgeStyle[key]
                         })
@@ -389,20 +391,20 @@ setInterval(() => {
                         // 0件なら表示しない
                         if(columnTotalCompletedStoryPoint === 0){
                             hasTotalStoryPointElement.parentNode.removeChild(hasTotalStoryPointElement)
-                            return 
+                            return
                         }
 
-                        hasTotalStoryPointElement.textContent = columnTotalCompletedStoryPoint
+                        hasTotalStoryPointElement.textContent = displayNumber(columnTotalCompletedStoryPoint)
                     } else {
                         // 0件なら表示しない
                         if(columnTotalCompletedStoryPoint === 0){
-                            return 
+                            return
                         }
 
                         // 上部に表示する合計バッジを生成
                         let totalStoryPointElement = document.createElement('span')
                         totalStoryPointElement.className = 'columntop-completed-story-point'
-                        totalStoryPointElement.textContent = columnTotalCompletedStoryPoint
+                        totalStoryPointElement.textContent = displayNumber(columnTotalCompletedStoryPoint)
                         Object.keys(badgeStyle).forEach(key => {
                             totalStoryPointElement.style[key] = badgeStyle[key]
                         })
@@ -419,16 +421,16 @@ setInterval(() => {
             {
                 const hasTotalStoryPointElement = document.querySelector('.boardtop-notcompleted-story-point')
                 if(hasTotalStoryPointElement) {
-                    hasTotalStoryPointElement.textContent = totalNotCompletedStoryPoint
+                    hasTotalStoryPointElement.textContent = displayNumber(totalNotCompletedStoryPoint)
                 } else {
                     // 0件なら表示しない
                     if(totalNotCompletedStoryPoint === 0) {
-                        return 
+                        return
                     }
                     // 合計未完了SPバッジを表示
                     let totalStoryPointElement = document.createElement('span')
                     totalStoryPointElement.className = 'boardtop-notcompleted-story-point'
-                    totalStoryPointElement.textContent = totalNotCompletedStoryPoint
+                    totalStoryPointElement.textContent = displayNumber(totalNotCompletedStoryPoint)
                     Object.keys(badgeStyle).forEach(key => {
                         totalStoryPointElement.style[key] = badgeStyle[key]
                     })
@@ -442,33 +444,33 @@ setInterval(() => {
                     // 0件なら表示しない
                     if(totalCompletedStoryPoint === 0){
                         hasTotalStoryPointElement.parentNode.removeChild(hasTotalStoryPointElement)
-                        return 
+                        return
                     }
 
-                    hasTotalStoryPointElement.textContent = totalCompletedStoryPoint
+                    hasTotalStoryPointElement.textContent = displayNumber(totalCompletedStoryPoint)
                 } else {
                     // 0件なら表示しない
                     if(totalCompletedStoryPoint === 0) {
-                        return 
+                        return
                     }
                     let totalStoryPointElement = document.createElement('span')
                     totalStoryPointElement.className = 'boardtop-completed-story-point'
-                    totalStoryPointElement.textContent = totalCompletedStoryPoint
+                    totalStoryPointElement.textContent = displayNumber(totalCompletedStoryPoint)
                     Object.keys(badgeStyle).forEach(key => {
                         totalStoryPointElement.style[key] = badgeStyle[key]
                     })
                     totalStoryPointElement.style.background = completedBadgeColor
-                    boardTitleContainer.appendChild(totalStoryPointElement)        
+                    boardTitleContainer.appendChild(totalStoryPointElement)
                 }
             }
-            
+
         })
 
 }, 1000)
 
 /**
  * 要素が取得できるまでループする関数 (max500ms)
- * @param {*} query 
+ * @param {*} query
  * @param {*} wait ms
  */
 function getElementUntilRendered(parent, query, wait) {
@@ -490,7 +492,7 @@ function getElementUntilRendered(parent, query, wait) {
 
 /**
  * 要素が取得できるまでループする関数 (max500ms)
- * @param {*} query 
+ * @param {*} query
  * @param {*} wait ms
  */
 function getElementsUntilRendered(parent, query, wait) {
@@ -508,4 +510,8 @@ function getElementsUntilRendered(parent, query, wait) {
         }
         iter(0)
     })
+}
+
+function displayNumber(number) {
+    return parseFloat(number.toFixed(2));
 }

@@ -10,7 +10,7 @@ const badgeStyle = {
     padding: '5px',
     color: '#fff',
     textAlign: 'center',
-    fontWeight: 'normal',
+    fontWeight: '600',
     marginLeft: '4px',
     cursor: 'pointer',
     fontSize: '11px',
@@ -21,7 +21,7 @@ const countStyle = {
     'color': '#000',
     'opacity': '0.7',
     'text-align': 'center',
-    'font-weight': 'bold',
+    'font-weight': '600',
     'margin-left': '4px',
     'font-size': '18px'
 }

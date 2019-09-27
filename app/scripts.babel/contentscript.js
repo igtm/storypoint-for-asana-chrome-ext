@@ -317,7 +317,7 @@ setInterval(() => {
 // セクション合計を右横に表示
 setInterval(() => {
     // 操作するエレメント
-    const listSectionsPromise = getElementsUntilRendered(document, '.ItemRow.ItemRow--enabled.DraggableItemRow-item.SectionRow', 100)
+    const listSectionsPromise = getElementsUntilRendered(document, '.SpreadsheetRow.SpreadsheetRow--enabled.DraggableSpreadsheetRow-item.DraggableSpreadsheetSectionRow.SpreadsheetSectionRow', 100)
 
     // 操作するエレメントがすべて取得できたら (カード表示時)
     listSectionsPromise
@@ -328,7 +328,7 @@ setInterval(() => {
             listSections.forEach(listSection => {
 
                 // 操作するエレメント
-                const listSectionHeader = listSection
+                const listSectionHeader = listSection.querySelector('.SpreadsheetSectionRow-nameWrapper')
                 const listSectionDropTargetRow = listSection.parentElement
 
                 // SPの計算
@@ -337,11 +337,11 @@ setInterval(() => {
                 // 手続き的ループ: 次の ListSectionに辿り着くまで１つずつ進む
                 let cnt = 0
                 let nextRow = listSectionDropTargetRow.nextElementSibling
-                while( cnt < 1000 && nextRow && nextRow.querySelector('.ItemRow.ItemRow--enabled.DraggableItemRow-item.TaskRow') ) {
+                while( cnt < 1000 && nextRow && nextRow.querySelector('.SpreadsheetRow.SpreadsheetRow--enabled.DraggableSpreadsheetRow-item.DraggableSpreadsheetTaskRow.SpreadsheetTaskRow') ) {
 
-                    const titleElement = nextRow.querySelector('.TaskName-input.override-focus-border')
+                    const titleElement = nextRow.querySelector('.SpreadsheetTaskName-input.override-focus-border.override-hover-border')
                     const title = titleElement.textContent
-                    const isCompleted = !!nextRow.querySelector('.TaskRow--completed');
+                    const isCompleted = !!nextRow.querySelector('.TaskRowCompletionStatus-checkbox--complete');
                     const sp_matched = title.match(/^\((\d+(?:\.\d+)?)\)/) // SP   例: (10) タスク => 10
                     const sp_subtask_completed_matched = title.match(/\[(\d+(?:\.\d+)?)\]$/) // 部分完了タスクSP   例: (10) タスク [5]  => 5/5
                     if(sp_matched){

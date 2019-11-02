@@ -317,7 +317,7 @@ setInterval(() => {
 // セクション合計を右横に表示
 setInterval(() => {
     // 操作するエレメント
-    const listSectionsPromise = getElementsUntilRendered(document, '.SpreadsheetRow.SpreadsheetRow--enabled.DraggableSpreadsheetRow-item.DraggableSpreadsheetSectionRow.SpreadsheetSectionRow', 100)
+    const listSectionsPromise = getElementsUntilRendered(document, '.DropTargetTaskGroupHeader', 100)
 
     // 操作するエレメントがすべて取得できたら (カード表示時)
     listSectionsPromise
@@ -328,7 +328,7 @@ setInterval(() => {
             listSections.forEach(listSection => {
 
                 // 操作するエレメント
-                const listSectionHeader = listSection.querySelector('.SpreadsheetSectionRow-nameWrapper')
+                const listSectionHeader = listSection.querySelector('.TaskGroupHeader-headerContainer')
                 const listSectionDropTargetRow = listSection.parentElement
 
                 // SPの計算
@@ -336,10 +336,10 @@ setInterval(() => {
 
                 // 手続き的ループ: 次の ListSectionに辿り着くまで１つずつ進む
                 let cnt = 0
-                let nextRow = listSectionDropTargetRow.nextElementSibling
-                while( cnt < 1000 && nextRow && nextRow.querySelector('.SpreadsheetRow.SpreadsheetRow--enabled.DraggableSpreadsheetRow-item.DraggableSpreadsheetTaskRow.SpreadsheetTaskRow') ) {
+                let nextRow = listSectionDropTargetRow.querySelector('.dropTargetRow.ProjectSpreadsheetGridRow-dropTargetRow')
+                while( cnt < 1000 && nextRow && nextRow.querySelector('.SpreadsheetTaskName-input') ) {
 
-                    const titleElement = nextRow.querySelector('.SpreadsheetTaskName-input.override-focus-border.override-hover-border')
+                    const titleElement = nextRow.querySelector('.SpreadsheetTaskName-input')
                     const title = titleElement.textContent
                     const isCompleted = !!nextRow.querySelector('.TaskRowCompletionStatus-checkbox--complete');
                     const sp_matched = title.match(/^\((\d+(?:\.\d+)?)\)/) // SP   例: (10) タスク => 10

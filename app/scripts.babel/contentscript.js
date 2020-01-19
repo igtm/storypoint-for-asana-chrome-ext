@@ -35,13 +35,12 @@ const completedBadgeColor = '#f39c12';
 // バッジの表示 (カード表示時)
 setInterval(() => {
     // 操作するエレメント
-    const bodyContainerPromise = getElementUntilRendered(document,'.SingleTaskPane-body', 100)
-    const descriptionContainerPromise = getElementUntilRendered(document,'.SingleTaskPane-descriptionRow', 100)
+    const bodyContainerPromise = getElementUntilRendered(document,'.SingleTaskPaneFields', 100)
     const titleTextAreaPromise = getElementUntilRendered(document,'.simpleTextarea--dynamic', 100)
 
     // 操作するエレメントがすべて取得できたら (カード表示時)
-    Promise.all([bodyContainerPromise, descriptionContainerPromise, titleTextAreaPromise])
-        .then(([bodyContainer, descriptionContainer, titleTextArea]) => {
+    Promise.all([bodyContainerPromise, titleTextAreaPromise])
+        .then(([bodyContainer, titleTextArea]) => {
             // 既にバッジが表示されているか
             const hasBadgeContainer = document.getElementsByClassName('badge-container').length !== 0
             if(hasBadgeContainer){
@@ -98,11 +97,11 @@ setInterval(() => {
 
                 badgeElement.addEventListener('click', function(e){
                     // サブタスクのSPを集計
-                    const subtasks = document.getElementsByClassName('SubtaskTaskRow')
+                    const subtasks = document.querySelectorAll('.TaskList > .dropTargetRow')
                     let subtasksNotCompletedStoryPoint = 0, subtasksCompletedStoryPoint = 0;
                     Array.prototype.forEach.call(subtasks, e => {
                         const isCompleted = !!e.querySelector('.TaskRowCompletionStatus-checkbox--complete')
-                        const subtaskTitleElement = e.querySelector('.autogrowTextarea-shadow')
+                        const subtaskTitleElement = e.querySelector('.AutogrowTextarea-shadow')
                         if(subtaskTitleElement){
                             const sp_matched = subtaskTitleElement.textContent.match(/^\((\d+(?:\.\d+)?)\)/)
                             if(sp_matched){
@@ -143,7 +142,8 @@ setInterval(() => {
             // バッジコンテナの生成
             let badgeContainer = document.createElement('div')
             badgeContainer.style.display = 'flex'
-            badgeContainer.className = 'badge-container'
+            badgeContainer.style.margin = '2px 10px'
+            badgeContainer.className = 'badge-container LabeledRowStructure-right'
 
             // バッジコンテナにバッジの挿入
             badgeElements.forEach(e => {
@@ -151,7 +151,25 @@ setInterval(() => {
             })
 
             // バッジコンテナをDOMに設置
-            bodyContainer.insertBefore(badgeContainer, descriptionContainer)
+            // fixed 20.01.19  2 column style
+            let fieldContainer = document.createElement('div')
+            fieldContainer.className = 'LabeledRowStructure'
+            const rightColumn = (() => {
+              let labelContainer = document.createElement('div')
+              labelContainer.style.width = '100px'
+              labelContainer.className = 'LabeledRowStructure-left'
+              let label = document.createElement('label')
+              label.className = 'LabeledRowStructure-label'
+              label.textContent = 'Story Point'
+              labelContainer.appendChild(label)
+              return labelContainer
+            })()
+            fieldContainer.appendChild(rightColumn)
+            fieldContainer.appendChild(badgeContainer)
+
+            // descriptionの上に追加
+            const fields = bodyContainer.children
+            bodyContainer.insertBefore(fieldContainer, fields[fields.length-1])
         })
 }, 1000)
 

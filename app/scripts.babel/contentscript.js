@@ -354,7 +354,7 @@ setInterval(() => {
 
                 // 手続き的ループ: 次の ListSectionに辿り着くまで１つずつ進む
                 let cnt = 0
-                let nextRow = listSectionDropTargetRow.querySelector('.dropTargetRow.ProjectSpreadsheetGridRow-dropTargetRow')
+                let nextRow = listSectionDropTargetRow.querySelector('.DropTargetRow.ProjectSpreadsheetGridRow-dropTargetRow')
                 while( cnt < 1000 && nextRow && nextRow.querySelector('.SpreadsheetTaskName-input') ) {
 
                     const titleElement = nextRow.querySelector('.SpreadsheetTaskName-input')

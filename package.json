@@ -21,7 +21,7 @@
     "gulp-if": "^3.0.0",
     "gulp-imagemin": "^7.1.0",
     "gulp-livereload": "^3.8.1",
-    "gulp-load-plugins": "^1.2.0",
+    "gulp-load-plugins": "^2.0.3",
     "gulp-size": "^3.0.0",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-uglify": "^1.5.3",

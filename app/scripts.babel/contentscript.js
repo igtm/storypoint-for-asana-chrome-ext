@@ -97,7 +97,7 @@ setInterval(() => {
 
                 badgeElement.addEventListener('click', function(e){
                     // サブタスクのSPを集計
-                    const subtasks = document.querySelectorAll('.TaskList > .dropTargetRow')
+                    const subtasks = document.querySelectorAll('.TaskList > .DropTargetRow')
                     let subtasksNotCompletedStoryPoint = 0, subtasksCompletedStoryPoint = 0;
                     Array.prototype.forEach.call(subtasks, e => {
                         const isCompleted = !!e.querySelector('.TaskRowCompletionStatus-checkbox--complete')

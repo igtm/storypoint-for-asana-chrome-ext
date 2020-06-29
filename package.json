@@ -26,7 +26,7 @@
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2",
     "gulp-useref": "^4.0.1",
-    "gulp-zip": "^5.0.1",
+    "gulp-zip": "^5.0.2",
     "main-bower-files": "^2.13.3",
     "run-sequence": "^2.2.1",
     "wiredep": "^4.0.0"

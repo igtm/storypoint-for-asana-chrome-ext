@@ -4,6 +4,9 @@
   "engines": {
     "node": ">=0.8.0"
   },
+  "scripts": {
+    "gulp": "gulp"
+  },
   "devDependencies": {
     "babel-core": "^6.7.2",
     "babel-polyfill": "^6.26.0",

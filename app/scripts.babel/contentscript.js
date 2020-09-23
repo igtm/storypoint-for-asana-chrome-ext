@@ -188,12 +188,12 @@ setInterval(() => {
 
                 // 操作するエレメント
                 const boardColumnHeader = boardColumn.querySelector('.BoardColumnHeader')
-                const boardCardNames = boardColumn.querySelectorAll('.BoardCard-name')
+                const boardCardNames = boardColumn.querySelectorAll('.BoardCard-taskName')
 
                 // SPの計算
                 let columnTotalNotCompletedStoryPoint = 0, columnTotalCompletedStoryPoint = 0;
                 Array.prototype.forEach.call(boardCardNames, (e) => {
-                    const isCompleted = e.getElementsByTagName('svg').length !== 0;
+                    const isCompleted = e.parentElement.parentElement.getElementsByClassName('TaskRowCompletionStatus-taskCompletionIcon--complete').length !== 0;
                     const sp_matched = e.textContent.match(/^\((\d+(?:\.\d+)?)\)/) // SP   例: (10) タスク => 10
                     const sp_subtask_completed_matched = e.textContent.match(/\[(\d+(?:\.\d+)?)\]$/) // 部分完了タスクSP   例: (10) タスク [5]  => 5/5
                     if(sp_matched){
@@ -359,7 +359,7 @@ setInterval(() => {
 
                     const titleElement = nextRow.querySelector('.SpreadsheetTaskName-input')
                     const title = titleElement.textContent
-                    const isCompleted = !!nextRow.querySelector('.TaskRowCompletionStatus-checkbox--complete');
+                    const isCompleted = nextRow.getElementsByClassName('TaskRowCompletionStatus-taskCompletionIcon--complete').length !== 0;
                     const sp_matched = title.match(/^\((\d+(?:\.\d+)?)\)/) // SP   例: (10) タスク => 10
                     const sp_subtask_completed_matched = title.match(/\[(\d+(?:\.\d+)?)\]$/) // 部分完了タスクSP   例: (10) タスク [5]  => 5/5
                     if(sp_matched){

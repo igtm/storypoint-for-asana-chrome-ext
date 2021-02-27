@@ -331,7 +331,7 @@ setInterval(() => {
 
 }, 1000)
 
-// List
+// List & Mytask
 // セクション合計を右横に表示
 setInterval(() => {
     // 操作するエレメント
@@ -354,7 +354,14 @@ setInterval(() => {
 
                 // 手続き的ループ: 次の ListSectionに辿り着くまで１つずつ進む
                 let cnt = 0
+
+                // List
                 let nextRow = listSectionDropTargetRow.querySelector('.DropTargetRow.ProjectSpreadsheetGridRow-dropTargetRow')
+                // MyTask
+                if (nextRow === null) {
+                    nextRow = listSectionDropTargetRow.querySelector('.MyTasksSpreadsheetGridRow-dropTargetRow')
+                }
+
                 while( cnt < 1000 && nextRow && nextRow.querySelector('.SpreadsheetTaskName-input') ) {
 
                     const titleElement = nextRow.querySelector('.SpreadsheetTaskName-input')

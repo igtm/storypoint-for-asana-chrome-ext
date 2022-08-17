@@ -1,6 +1,6 @@
 {
   "name": "StoryPoint for Asana",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "manifest_version": 2,
   "description": "track your scrum story points on your Asana board.",
   "icons": {

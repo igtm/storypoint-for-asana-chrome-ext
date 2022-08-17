@@ -35,7 +35,7 @@ const completedBadgeColor = '#f39c12';
 // バッジの表示 (カード表示時)
 setInterval(() => {
     // 操作するエレメント
-    const bodyContainerPromise = getElementUntilRendered(document,'.SingleTaskPaneFields', 100)
+    const bodyContainerPromise = getElementUntilRendered(document,'.TaskPaneFields', 100)
     const titleTextAreaPromise = getElementUntilRendered(document,'.simpleTextarea--dynamic', 100)
 
     // 操作するエレメントがすべて取得できたら (カード表示時)

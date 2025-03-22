@@ -1,15 +1,15 @@
 const _slicedToArray = (() => {
-  function sliceIterator(arr, i) {
-    const _arr = [];
+  function sliceIterator(arr: any, i?: number): any[] {
+    const _arr: any[] = [];
     let _n = true;
     let _d = false;
-    let _e = undefined;
+    let _e: any = undefined;
+    const _iterator = arr[Symbol.iterator]();
+    let _s;
     try {
-      for (
-        let _i = arr[Symbol.iterator](), _s;
-        !(_n = (_s = _i.next()).done);
-        _n = true
-      ) {
+      while (true) {
+        _s = _iterator.next();
+        if (_s.done) break;
         _arr.push(_s.value);
         if (i && _arr.length === i) break;
       }
@@ -18,14 +18,14 @@ const _slicedToArray = (() => {
       _e = err;
     } finally {
       try {
-        if (!_n && _i["return"]) _i.return();
+        if (!_n && _iterator.return) _iterator.return();
       } finally {
         if (_d) throw _e;
       }
     }
     return _arr;
   }
-  return (arr, i) => {
+  return (arr: any, i?: number) => {
     if (Array.isArray(arr)) {
       return arr;
     }
@@ -105,9 +105,8 @@ setInterval(() => {
           "click",
           (e) => {
             titleTextArea.focus();
-            titleTextArea.value = `(${
-              e.target.textContent
-            }) ${titleTextArea.value.replace(/^\(.+\) /, "")}`;
+            titleTextArea.value = `(${(e.target as HTMLElement)
+              .textContent!}) ${titleTextArea.value.replace(/^\(.+\) /, "")}`;
             const evt = document.createEvent("KeyboardEvent");
             evt.initEvent("input", true, false);
             // adding this created a magic and passes it as if keypressed
@@ -129,7 +128,7 @@ setInterval(() => {
 
         badgeElement.addEventListener(
           "click",
-          (e) => {
+          () => {
             titleTextArea.focus();
             titleTextArea.value = titleTextArea.value
               .replace(/^\(.+\) /, "")
@@ -156,18 +155,18 @@ setInterval(() => {
 
         badgeElement.addEventListener(
           "click",
-          (e) => {
+          () => {
             // サブタスクのSPを集計
             const subtasks = document.querySelectorAll(
               ".TaskList > .DropTargetRow"
             );
             let subtasksNotCompletedStoryPoint = 0;
             let subtasksCompletedStoryPoint = 0;
-            Array.prototype.forEach.call(subtasks, (e) => {
-              const isCompleted = !!e.querySelector(
+            Array.prototype.forEach.call(subtasks, (_) => {
+              const isCompleted = !!_.querySelector(
                 ".TaskRowCompletionStatus-checkbox--complete"
               );
-              const subtaskTitleElement = e.querySelector(
+              const subtaskTitleElement = _.querySelector(
                 ".AutogrowTextarea-shadow"
               );
               if (subtaskTitleElement) {
@@ -246,7 +245,7 @@ setInterval(() => {
       const fields = bodyContainer.children;
       bodyContainer.insertBefore(fieldContainer, fields[fields.length - 1]);
     })
-    .catch((e) => {});
+    .catch(() => {});
 }, 1000);
 
 // ボード上カード列別のポイント合計を上部に表示
@@ -260,7 +259,8 @@ setInterval(() => {
 
   // 操作するエレメントがすべて取得できたら (カード表示時)
   boardColumnsPromise
-    .then((boardColumns) => {
+    .then((boardColumnsRaw) => {
+      const boardColumns = Array.from(boardColumnsRaw as NodeListOf<Element>);
       let totalNotCompletedStoryPoint = 0;
       let totalCompletedStoryPoint = 0;
 
@@ -309,65 +309,67 @@ setInterval(() => {
         {
           const hasTotalCountElement = boardColumn.querySelector(
             ".columntop-count-story-point"
-          );
+          ) as HTMLElement | null;
           if (hasTotalCountElement) {
-            hasTotalCountElement.textContent = displayNumber(
-              boardCardNames.length
+            hasTotalCountElement.textContent = String(
+              displayNumber(boardCardNames.length)
             );
           } else {
-            // 上部に表示する合計バッジを生成
-            const totalStoryPointElement = document.createElement("span");
-            totalStoryPointElement.className = "columntop-count-story-point";
-            totalStoryPointElement.textContent = displayNumber(
-              boardCardNames.length
-            );
-            Object.keys(countStyle).forEach((key) => {
-              totalStoryPointElement.style[key] = countStyle[key];
-            });
+            if (boardColumnHeader) {
+              const totalStoryPointElement = document.createElement("span");
+              totalStoryPointElement.className = "columntop-count-story-point";
+              totalStoryPointElement.textContent = String(
+                displayNumber(boardCardNames.length)
+              );
+              Object.keys(countStyle).forEach((key) => {
+                totalStoryPointElement.style[key] = countStyle[key];
+              });
 
-            boardColumnHeader.appendChild(totalStoryPointElement);
+              boardColumnHeader.appendChild(totalStoryPointElement);
+            }
           }
         }
         // 未終了StoryPoint
         {
           const hasTotalStoryPointElement = boardColumn.querySelector(
             ".columntop-notcompleted-story-point"
-          );
+          ) as HTMLElement | null;
           if (hasTotalStoryPointElement) {
-            hasTotalStoryPointElement.textContent = displayNumber(
-              columnTotalNotCompletedStoryPoint
+            hasTotalStoryPointElement.textContent = String(
+              displayNumber(columnTotalNotCompletedStoryPoint)
             );
           } else {
-            // 上部に表示する合計バッジを生成
-            const _totalStoryPointElement = document.createElement("span");
-            _totalStoryPointElement.className =
-              "columntop-notcompleted-story-point";
-            _totalStoryPointElement.textContent = displayNumber(
-              columnTotalNotCompletedStoryPoint
-            );
-            Object.keys(badgeStyle).forEach((key) => {
-              _totalStoryPointElement.style[key] = badgeStyle[key];
-            });
+            if (boardColumnHeader) {
+              const _totalStoryPointElement = document.createElement("span");
+              _totalStoryPointElement.className =
+                "columntop-notcompleted-story-point";
+              _totalStoryPointElement.textContent = String(
+                displayNumber(columnTotalNotCompletedStoryPoint)
+              );
+              Object.keys(badgeStyle).forEach((key) => {
+                _totalStoryPointElement.style[key] = badgeStyle[key];
+              });
 
-            boardColumnHeader.appendChild(_totalStoryPointElement);
+              boardColumnHeader.appendChild(_totalStoryPointElement);
+            }
           }
         }
         // 終了StoryPoint (こちらは1ポイント以上あるときのみ表示)
         {
-          const _hasTotalStoryPointElement = boardColumn.querySelector(
+          const completedElement = boardColumn.querySelector(
             ".columntop-completed-story-point"
-          );
-          if (_hasTotalStoryPointElement) {
+          ) as HTMLElement | null;
+          if (completedElement) {
             // 0件なら表示しない
             if (columnTotalCompletedStoryPoint === 0) {
-              _hasTotalStoryPointElement.parentNode.removeChild(
-                _hasTotalStoryPointElement
-              );
+              if (completedElement.parentNode) {
+                completedElement.parentNode.removeChild(completedElement);
+              }
               return;
             }
 
-            _hasTotalStoryPointElement.textContent = displayNumber(
-              columnTotalCompletedStoryPoint
+            completedElement.textContent = String(
+              displayNumber(columnTotalCompletedStoryPoint)
             );
           } else {
             // 0件なら表示しない
@@ -375,19 +377,20 @@ setInterval(() => {
               return;
             }
 
-            // 上部に表示する合計バッジを生成
-            const _totalStoryPointElement2 = document.createElement("span");
-            _totalStoryPointElement2.className =
-              "columntop-completed-story-point";
-            _totalStoryPointElement2.textContent = displayNumber(
-              columnTotalCompletedStoryPoint
-            );
-            Object.keys(badgeStyle).forEach((key) => {
-              _totalStoryPointElement2.style[key] = badgeStyle[key];
-            });
-            _totalStoryPointElement2.style.background = completedBadgeColor;
+            if (boardColumnHeader) {
+              const _totalStoryPointElement2 = document.createElement("span");
+              _totalStoryPointElement2.className =
+                "columntop-completed-story-point";
+              _totalStoryPointElement2.textContent = String(
+                displayNumber(columnTotalCompletedStoryPoint)
+              );
+              Object.keys(badgeStyle).forEach((key) => {
+                _totalStoryPointElement2.style[key] = badgeStyle[key];
+              });
+              _totalStoryPointElement2.style.background = completedBadgeColor;
 
-            boardColumnHeader.appendChild(_totalStoryPointElement2);
+              boardColumnHeader.appendChild(_totalStoryPointElement2);
+            }
           }
         }
       });
@@ -401,8 +404,8 @@ setInterval(() => {
         ".boardtop-notcompleted-story-point"
       );
       if (hasTotalStoryPointElement) {
-        hasTotalStoryPointElement.textContent = displayNumber(
-          totalNotCompletedStoryPoint
+        hasTotalStoryPointElement.textContent = String(
+          displayNumber(totalNotCompletedStoryPoint)
         );
       } else {
         // 0件なら表示しない
@@ -412,8 +415,8 @@ setInterval(() => {
         // 合計未完了SPバッジを表示
         const totalStoryPointElement = document.createElement("span");
         totalStoryPointElement.className = "boardtop-notcompleted-story-point";
-        totalStoryPointElement.textContent = displayNumber(
-          totalNotCompletedStoryPoint
+        totalStoryPointElement.textContent = String(
+          displayNumber(totalNotCompletedStoryPoint)
         );
         Object.keys(badgeStyle).forEach(function (key) {
           totalStoryPointElement.style[key] = badgeStyle[key];
@@ -422,18 +425,20 @@ setInterval(() => {
       }
       const _hasTotalStoryPointElement2 = document.querySelector(
         ".boardtop-completed-story-point"
-      );
+      ) as HTMLElement | null;
       if (_hasTotalStoryPointElement2) {
         // 0件なら表示しない
         if (totalCompletedStoryPoint === 0) {
-          _hasTotalStoryPointElement2.parentNode.removeChild(
-            _hasTotalStoryPointElement2
-          );
+          if (_hasTotalStoryPointElement2.parentNode) {
+            _hasTotalStoryPointElement2.parentNode.removeChild(
+              _hasTotalStoryPointElement2
+            );
+          }
           return;
         }
 
-        _hasTotalStoryPointElement2.textContent = displayNumber(
-          totalCompletedStoryPoint
+        _hasTotalStoryPointElement2.textContent = String(
+          displayNumber(totalCompletedStoryPoint)
         );
       } else {
         // 0件なら表示しない
@@ -442,8 +447,8 @@ setInterval(() => {
         }
         const _totalStoryPointElement3 = document.createElement("span");
         _totalStoryPointElement3.className = "boardtop-completed-story-point";
-        _totalStoryPointElement3.textContent = displayNumber(
-          totalCompletedStoryPoint
+        _totalStoryPointElement3.textContent = String(
+          displayNumber(totalCompletedStoryPoint)
         );
         Object.keys(badgeStyle).forEach((key) => {
           _totalStoryPointElement3.style[key] = badgeStyle[key];
@@ -452,7 +457,7 @@ setInterval(() => {
         boardTitleContainer.appendChild(_totalStoryPointElement3);
       }
     })
-    .catch((e) => {});
+    .catch(() => {});
 }, 1000);
 
 // List & Mytask
@@ -467,7 +472,8 @@ setInterval(() => {
 
   // 操作するエレメントがすべて取得できたら (カード表示時)
   listSectionsPromise
-    .then((listSections) => {
+    .then((listSectionsRaw) => {
+      const listSections = Array.from(listSectionsRaw as NodeListOf<Element>);
       let totalNotCompletedStoryPoint = 0;
       let totalCompletedStoryPoint = 0;
 
@@ -478,6 +484,7 @@ setInterval(() => {
           ".TaskGroupHeader-headerContainer"
         );
         const listSectionDropTargetRow = listSection.parentElement;
+        if (!listSectionDropTargetRow) return;
 
         // SPの計算
         let columnTotalNotCompletedStoryPoint = 0;
@@ -505,7 +512,13 @@ setInterval(() => {
           const titleElement = nextRow.querySelector(
             ".SpreadsheetTaskName-input"
           );
+          if (!titleElement) break;
           const title = titleElement.textContent;
+          if (!title) {
+            nextRow = nextRow.nextElementSibling;
+            ++cnt;
+            continue;
+          }
           const isCompleted =
             nextRow.getElementsByClassName(
               "TaskRowCompletionStatus-taskCompletionIcon--complete"
@@ -540,66 +553,67 @@ setInterval(() => {
         {
           const hasTotalStoryPointElement = listSection.querySelector(
             ".columntop-notcompleted-story-point"
-          );
+          ) as HTMLElement | null;
           if (hasTotalStoryPointElement) {
-            hasTotalStoryPointElement.textContent = displayNumber(
-              columnTotalNotCompletedStoryPoint
+            hasTotalStoryPointElement.textContent = String(
+              displayNumber(columnTotalNotCompletedStoryPoint)
             );
           } else {
-            // 上部に表示する合計バッジを生成
-            const totalStoryPointElement = document.createElement("span");
-            totalStoryPointElement.className =
-              "columntop-notcompleted-story-point";
-            totalStoryPointElement.textContent = displayNumber(
-              columnTotalNotCompletedStoryPoint
-            );
-            Object.keys(badgeStyle).forEach((key) => {
-              totalStoryPointElement.style[key] = badgeStyle[key];
-            });
+            if (listSectionHeader) {
+              const totalStoryPointElement = document.createElement("span");
+              totalStoryPointElement.className =
+                "columntop-notcompleted-story-point";
+              totalStoryPointElement.textContent = String(
+                displayNumber(columnTotalNotCompletedStoryPoint)
+              );
+              Object.keys(badgeStyle).forEach((key) => {
+                totalStoryPointElement.style[key] = badgeStyle[key];
+              });
 
-            // 右端に追加
-            listSectionHeader.appendChild(totalStoryPointElement);
-            // タイトルの左隣に追加
-            //const t = listSectionHeader.querySelector('.SectionRow-sectionName')
-            //listSectionHeader.insertBefore(totalStoryPointElement, t)
+              // 右端に追加
+              listSectionHeader.appendChild(totalStoryPointElement);
+              // タイトルの左隣に追加
+              //const t = listSectionHeader.querySelector('.SectionRow-sectionName')
+              //listSectionHeader.insertBefore(totalStoryPointElement, t)
+            }
           }
         }
         // 終了StoryPoint (こちらは1ポイント以上あるときのみ表示)
         {
-          const _hasTotalStoryPointElement3 = listSection.querySelector(
+          const completedElement = listSection.querySelector(
             ".columntop-completed-story-point"
-          );
-          if (_hasTotalStoryPointElement3) {
+          ) as HTMLElement | null;
+          if (completedElement) {
             // 0件なら表示しない
             if (columnTotalCompletedStoryPoint === 0) {
-              _hasTotalStoryPointElement3.parentNode.removeChild(
-                _hasTotalStoryPointElement3
-              );
+              if (completedElement.parentNode) {
+                completedElement.parentNode.removeChild(completedElement);
+              }
               return;
             }
 
-            _hasTotalStoryPointElement3.textContent = displayNumber(
-              columnTotalCompletedStoryPoint
+            completedElement.textContent = String(
+              displayNumber(columnTotalCompletedStoryPoint)
             );
           } else {
             // 0件なら表示しない
             if (columnTotalCompletedStoryPoint === 0) {
               return;
             }
+            if (listSectionHeader) {
+              const _totalStoryPointElement4 = document.createElement("span");
+              _totalStoryPointElement4.className =
+                "columntop-completed-story-point";
+              _totalStoryPointElement4.textContent = String(
+                displayNumber(columnTotalCompletedStoryPoint)
+              );
+              Object.keys(badgeStyle).forEach((key) => {
+                _totalStoryPointElement4.style[key] = badgeStyle[key];
+              });
+              _totalStoryPointElement4.style.background = completedBadgeColor;
 
-            // 上部に表示する合計バッジを生成
-            const _totalStoryPointElement4 = document.createElement("span");
-            _totalStoryPointElement4.className =
-              "columntop-completed-story-point";
-            _totalStoryPointElement4.textContent = displayNumber(
-              columnTotalCompletedStoryPoint
-            );
-            Object.keys(badgeStyle).forEach((key) => {
-              _totalStoryPointElement4.style[key] = badgeStyle[key];
-            });
-            _totalStoryPointElement4.style.background = completedBadgeColor;
-
-            listSectionHeader.appendChild(_totalStoryPointElement4);
+              listSectionHeader.appendChild(_totalStoryPointElement4);
+            }
           }
         }
       });
@@ -614,8 +628,8 @@ setInterval(() => {
           ".boardtop-notcompleted-story-point"
         );
         if (hasTotalStoryPointElement) {
-          hasTotalStoryPointElement.textContent = displayNumber(
-            totalNotCompletedStoryPoint
+          hasTotalStoryPointElement.textContent = String(
+            displayNumber(totalNotCompletedStoryPoint)
           );
         } else {
           // 0件なら表示しない
@@ -626,8 +640,8 @@ setInterval(() => {
           const totalStoryPointElement = document.createElement("span");
           totalStoryPointElement.className =
             "boardtop-notcompleted-story-point";
-          totalStoryPointElement.textContent = displayNumber(
-            totalNotCompletedStoryPoint
+          totalStoryPointElement.textContent = String(
+            displayNumber(totalNotCompletedStoryPoint)
           );
           Object.keys(badgeStyle).forEach((key) => {
             totalStoryPointElement.style[key] = badgeStyle[key];
@@ -639,18 +653,20 @@ setInterval(() => {
       {
         const _hasTotalStoryPointElement4 = document.querySelector(
           ".boardtop-completed-story-point"
-        );
+        ) as HTMLElement | null;
         if (_hasTotalStoryPointElement4) {
           // 0件なら表示しない
           if (totalCompletedStoryPoint === 0) {
-            _hasTotalStoryPointElement4.parentNode.removeChild(
-              _hasTotalStoryPointElement4
-            );
+            if (_hasTotalStoryPointElement4.parentNode) {
+              _hasTotalStoryPointElement4.parentNode.removeChild(
+                _hasTotalStoryPointElement4
+              );
+            }
             return;
           }
 
-          _hasTotalStoryPointElement4.textContent = displayNumber(
-            totalCompletedStoryPoint
+          _hasTotalStoryPointElement4.textContent = String(
+            displayNumber(totalCompletedStoryPoint)
           );
         } else {
           // 0件なら表示しない
@@ -659,8 +675,8 @@ setInterval(() => {
           }
           const _totalStoryPointElement5 = document.createElement("span");
           _totalStoryPointElement5.className = "boardtop-completed-story-point";
-          _totalStoryPointElement5.textContent = displayNumber(
-            totalCompletedStoryPoint
+          _totalStoryPointElement5.textContent = String(
+            displayNumber(totalCompletedStoryPoint)
           );
           Object.keys(badgeStyle).forEach((key) => {
             _totalStoryPointElement5.style[key] = badgeStyle[key];
@@ -670,7 +686,7 @@ setInterval(() => {
         }
       }
     })
-    .catch((e) => {});
+    .catch(() => {});
 }, 1000);
 
 /**
@@ -678,17 +694,21 @@ setInterval(() => {
  * @param {*} query
  * @param {*} wait ms
  */
-function getElementUntilRendered(parent, query, wait) {
+function getElementUntilRendered<T extends Element = Element>(
+  parent: ParentNode,
+  query: string,
+  wait: number
+): Promise<T> {
   return new Promise((resolve, reject) => {
-    function iter(counter) {
+    function iter(counter: number) {
       if (counter * wait >= 500) {
         return reject();
       }
-      const e = parent.querySelector(query);
+      const e = parent.querySelector(query) as T | null;
       if (e) {
         return resolve(e);
       }
-      return setTimeout(iter.bind(this, counter + 1), wait);
+      return setTimeout(() => iter(counter + 1), wait);
     }
     iter(0);
   });
@@ -699,17 +719,21 @@ function getElementUntilRendered(parent, query, wait) {
  * @param {*} query
  * @param {*} wait ms
  */
-function getElementsUntilRendered(parent, query, wait) {
+function getElementsUntilRendered<T extends Element = Element>(
+  parent: ParentNode,
+  query: string,
+  wait: number
+): Promise<NodeListOf<T>> {
   return new Promise((resolve, reject) => {
-    function iter(counter) {
+    function iter(counter: number) {
       if (counter * wait >= 500) {
         return reject();
       }
-      const e = parent.querySelectorAll(query);
+      const e = parent.querySelectorAll(query) as NodeListOf<T>;
       if (e.length > 0) {
         return resolve(e);
       }
-      return setTimeout(iter.bind(this, counter + 1), wait);
+      return setTimeout(() => iter(counter + 1), wait);
     }
     iter(0);
   });

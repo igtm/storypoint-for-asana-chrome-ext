@@ -1,0 +1,34 @@
+name: Front Test
+
+on:
+  pull_request:
+    branches:
+      - master
+
+concurrency:
+  # ref for branch
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Front Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+      - name: Use Node.js
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/cache@2f8e54208210a422b2efd51efaa6bd6d7ca8920f # v3.4.3
+        id: yarn-cache
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+      - if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
+        run: yarn
+      - name: test
+        run: |
+          yarn build

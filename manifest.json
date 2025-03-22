@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "StoryPoint for Asana",
+  "version": "0.0.30",
+  "description": "track your scrum story points on your Asana board.",
+  "icons": {
+    "16": "images/icon-16.png",
+    "128": "images/icon-128.png"
+  },
+  "content_scripts": [
+    {
+      "js": ["src/content.ts"],
+      "matches": ["https://app.asana.com/*"]
+    }
+  ]
+}

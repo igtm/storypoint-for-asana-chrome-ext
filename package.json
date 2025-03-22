@@ -1,54 +1,16 @@
 {
-  "name": "my-extension",
+  "name": "storypoint-for-asana-chrome-ext",
   "private": true,
-  "engines": {
-    "node": ">=0.8.0"
-  },
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "gulp": "gulp",
-    "package": "gulp package"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
   "devDependencies": {
-    "babel-core": "^6.7.2",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-stage-3": "^6.24.1",
-    "del": "^6.0.0",
-    "gulp": "^4.0.2",
-    "gulp-babel": "^7.0.1",
-    "gulp-cache": "^0.4.3",
-    "gulp-chrome-manifest": "0.0.13",
-    "gulp-clean-css": "^4.3.0",
-    "gulp-eslint": "^2.0.0",
-    "gulp-htmlmin": "^5.0.1",
-    "gulp-if": "^3.0.0",
-    "gulp-imagemin": "^7.1.0",
-    "gulp-livereload": "^3.8.1",
-    "gulp-load-plugins": "^2.0.6",
-    "gulp-size": "^4.0.0",
-    "gulp-sourcemaps": "^3.0.0",
-    "gulp-uglify": "^3.0.2",
-    "gulp-useref": "^5.0.0",
-    "gulp-zip": "^5.1.0",
-    "main-bower-files": "^2.13.3",
-    "run-sequence": "^2.2.1",
-    "wiredep": "^4.0.0"
-  },
-  "eslintConfig": {
-    "env": {
-      "node": true,
-      "browser": true
-    },
-    "globals": {
-      "chrome": true
-    },
-    "rules": {
-      "eol-last": 0,
-      "quotes": [
-        2,
-        "single"
-      ]
-    }
+    "@crxjs/vite-plugin": "^2.0.0-beta.32",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.0"
   }
 }
